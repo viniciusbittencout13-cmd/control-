@@ -18,7 +18,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -26,10 +29,10 @@ jobs:
           gradle-version: 8.8
 
       - name: Validate Gradle project
-        run: gradle projects
+        run: gradle --no-daemon --stacktrace projects
 
       - name: Run unit tests
-        run: gradle :app:testDebugUnitTest
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest
 
       - name: Assemble debug APK
-        run: gradle :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
