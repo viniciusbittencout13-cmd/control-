@@ -23,16 +23,30 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.8
 
+      - name: Select Gradle command
+        id: gradle-cmd
+        shell: bash
+        run: |
+          if [ -x ./gradlew ]; then
+            echo "cmd=./gradlew" >> "$GITHUB_OUTPUT"
+          else
+            echo "cmd=gradle" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Validate Gradle project
-        run: gradle --no-daemon --stacktrace projects
+        run: ${{ steps.gradle-cmd.outputs.cmd }} --no-daemon --stacktrace projects
 
       - name: Run unit tests
-        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest
+        run: ${{ steps.gradle-cmd.outputs.cmd }} --no-daemon --stacktrace :app:testDebugUnitTest
 
       - name: Assemble debug APK
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+        run: ${{ steps.gradle-cmd.outputs.cmd }} --no-daemon --stacktrace :app:assembleDebug
