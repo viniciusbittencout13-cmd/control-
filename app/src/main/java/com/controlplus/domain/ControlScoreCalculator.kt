@@ -12,6 +12,6 @@ object ControlScoreCalculator {
             (factors.budgetRatio.coerceIn(0f, 1f) * 0.45f) +
                 (factors.appLimitsRatio.coerceIn(0f, 1f) * 0.30f) +
                 (factors.tasksRatio.coerceIn(0f, 1f) * 0.25f)
-        return (weighted * 100).toInt()
+        return kotlin.math.round(weighted * 100).toInt()
     }
 }
